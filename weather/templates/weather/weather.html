@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8" />
+    <title>Current Weather</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+  </head>
+  <style>
+        .jumbotron{
+    background-color: #B4F1FF;
+    }
+    .button {
+      padding: 15px 25px;
+      font-size: 15px;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      text-align: center;
+      cursor: pointer;
+      outline: none;
+      color: #fff;
+      background-color: #fd6d73;
+      border: none;
+      border-radius: 15px;
+      {#box-shadow: 0 9px #999;#}
+    }
+    body{
+        background-color: #B4F1FF;
+    }
+
+    .button:hover {background-color: #0b1dc9;
+        color:#fff
+    }
+
+    .button:active {
+      background-color: #0b1dc9;
+      box-shadow: 0 5px #666;
+      transform: translateY(4px);
+    }
+    .banner-background
+    {
+        background-color: #0b1dc9;
+    }
+    .controller
+    {
+        -webkit-appearance: none !important;
+      background-clip: padding-box;
+      background-color: white;
+      vertical-align: middle;
+      border-radius: 0.25rem;
+      /* border: 1px solid #e0e0e5; */
+      font-size: 1rem;
+      width: 100%;
+      line-height: 2;
+      /* padding: 0.375rem 1.25rem; */
+      -webkit-transition: border-color 0.2s;
+      -moz-transition: border-color 0.2s;
+      transition: border-color 0.2s;
+    }
+    .controller:hover
+    {
+        transition: all 0.5s;
+      box-shadow: 0 0 40px #f9d442b9;
+      border-color: #f9d342;
+      outline: none;
+    }
+    #current-city
+    {
+        color:#fd6d73;
+        font-family: monospace;
+    }
+    .fas
+    {
+        margin-right: 0.25rem;
+    }
+    #city
+    {
+        font-family: monospace;
+    }
+    #banner-image
+    {
+        width: 25%;
+        height: auto;
+        margin-left: 30%;
+        margin-right: auto;
+        float: left;
+    }
+  </style>
+  <body>
+    <!DOCTYPE html>
+
+    <html>
+      <head>
+        <meta charset="utf-8" />
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <script
+          src="https://kit.fontawesome.com/af87bb6e30.js"
+          crossorigin="anonymous"
+        ></script>
+        <script>
+
+          var ipinfo;
+          var city;
+
+          $.getJSON("https://ipinfo.io", function (data) {
+
+              {#$("#city").append("City: " + data.city + " <br>,County: " + data.country + " ,IP: " + data.ip + " <br>,,Location: " + data.loc + " <br>,,Organisation: " + data.org + " <br>,,Postal Code: " + data.postal + " <br>,,Region: " + data.timezone + "")#}
+              $("#city").append(data.city+","+ data.country );
+              {#$("#id_name").value(data.city);#}
+              document.getElementById('id_name').value=data.city+","+ data.country ;
+
+          })
+        </script>
+      </head>
+    </html>
+
+    <div class="jumbotron">
+      <section class="hero is-info banner-background">
+        <div class="hero-body banner-background">
+          <div class="container">
+            {% load static %} <img id="banner-image" src="{% static "/images/butterfly_new.original.png" %}" alt="home" />
+            <h1 class="title">Weather App</h1>
+            <br />
+            <span id="current-city">Current City:</span>
+            <span id="city" name="city"></span>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-offset-4 is-4">
+              <form method="post" action="/">
+                {% csrf_token %}
+                <div class="field has-addons">
+                  <div class="control controller">{{ form.name }}</div>
+                  <div class="control">
+                    <button type="submit" class="button">Check Now</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div>
+          <center>
+            <a
+              style="text-align: center; margin: auto; margin-top: 10px"
+              class="btn btn-primary"
+              href="ips/"
+              ><i class="fas fa-location-arrow"></i>Use Current Location</a
+            >
+          </center>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-offset-4 is-4">
+              {% for city_weather in weather_data %}
+              <div class="box">
+                <article class="media">
+                  <div class="media-left">
+                    <figure class="image is-50x50">
+                      <img
+                        src="https://openweathermap.org/img/w/{{ city_weather.icon }}.png"
+                        alt="Image"
+                      />
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <span class="title">{{ city_weather.city }}</span>
+                        <br />
+                        <span class="subtitle"
+                          >{{ city_weather.temperature }}°C</span
+                        >
+                        <br />{{ city_weather.description }}
+                      </p>
+                    </div>
+                  </div>
+                  <a class="btn btn-primary" id="ss" href="/delete/">Delete</a>
+                </article>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- {#    <footer class="footer">#}
+{##}
+{#    </footer>#} -->
+    </div>
+  </body>
+</html>
+<script>
+  $.ajax({
+    type: "POST",
+    url: "url",
+    data: $(this).serialize(),
+  });
+</script>
